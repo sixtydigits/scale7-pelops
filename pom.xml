@@ -3,9 +3,9 @@
 	<groupId>org.scale7</groupId>
 	<artifactId>scale7-pelops</artifactId>
 	<packaging>jar</packaging>
-	<version>1.4-1.2.x-SNAPSHOT</version>
+	<version>1.5-2.1.x-SNAPSHOT</version>
 	<name>Pelops - A library for accessing the Cassandra database</name>
-	<url>http://github.com/s7/pelops</url>
+	<url>http://github.com/sixtydigits/scale7-pelops</url>
 	<properties>
 		<!-- The ${scale7.deploy.dir} should point to the directory that contains 
 			the clone of http://github.com/s7/mvnrepo. By default it assumes that it's 
@@ -14,6 +14,8 @@
 			be an absolute path (specified in your settings.xml). -->
 		<scale7.deploy.dir>file://${basedir}/../mvnrepo</scale7.deploy.dir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>8</maven.compiler.source>
+		<maven.compiler.target>8</maven.compiler.target>
 	</properties>
 	<developers>
 		<developer>
@@ -30,8 +32,8 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:git:http://github.com/s7/scale7-pelops.git</connection>
-		<developerConnection>scm:git:git@github.com:s7/scale7-pelops.git</developerConnection>
+		<connection>scm:git:http://github.com/sixtydigits/scale7-pelops.git</connection>
+		<developerConnection>scm:git:git@github.com:sixtydigits/scale7-pelops.git</developerConnection>
 		<url>http://github.com/s7/scale7-pelops</url>
 	</scm>
 	<issueManagement>
@@ -47,13 +49,17 @@
         <dependency>
             <groupId>org.apache.cassandra</groupId>
             <artifactId>cassandra-thrift</artifactId>
-            <version>1.2.1</version>
+            <version>2.1.21</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
-                <exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>log4j-over-slf4j</artifactId>
+				</exclusion>
+				<exclusion>
                     <groupId>javax.servlet</groupId>
                     <artifactId>servlet-api</artifactId>
                 </exclusion>
@@ -63,10 +69,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
+		<dependency>
 			<groupId>com.eaio.uuid</groupId>
 			<artifactId>uuid</artifactId>
-			<version>3.2</version>
+			<!-- NOTE: we can't use the 'official' 3.5 release because it has deps on cobertura -->
+			<version>3.5-SD</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scale7</groupId>
@@ -84,7 +91,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>5.1.9.RELEASE</version>
 			<!-- only required if you use the classes in org.scale7.cassandra.pelops.spring -->
 			<optional>true</optional>
 			<exclusions>
@@ -97,56 +104,12 @@
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>1.6.2</version>
+			<version>2.10.3</version>
 			<!-- only required if you use the methods specific Joda Time helpers. -->
 			<optional>true</optional>
 		</dependency>
 
 		<!-- TEST DEPENDENCIES -->
-        <dependency>
-            <groupId>org.apache.cassandra</groupId>
-            <artifactId>cassandra-all</artifactId>
-            <version>1.2.1</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-cli</groupId>
-                    <artifactId>commons-cli</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-codec</groupId>
-                    <artifactId>commons-codec</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.antlr</groupId>
-                    <artifactId>antlr</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>jline</groupId>
-                    <artifactId>jline</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.googlecode.json-simple</groupId>
-                    <artifactId>json-simple</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.github.stephenc.high-scale-lib</groupId>
-                    <artifactId>high-scale-lib</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.safehaus.jug</groupId>
-                    <artifactId>jug</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -162,55 +125,13 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>1.8.4</version>
+			<version>3.0.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.5.11</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.yaml</groupId>
-			<artifactId>snakeyaml</artifactId>
-			<version>1.6</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cassandra.deps</groupId>
-			<artifactId>avro</artifactId>
-			<version>1.4.0-cassandra-1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.4</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<version>6.1.21</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-util</artifactId>
-			<version>6.1.21</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.googlecode.concurrentlinkedhashmap</groupId>
-			<artifactId>concurrentlinkedhashmap-lru</artifactId>
-			<version>1.1</version>
+			<version>1.7.28</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -219,53 +140,12 @@
 			<version>r08</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.reardencommerce</groupId>
-			<artifactId>clhm-production</artifactId>
-			<version>1.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.stephenc.high-scale-lib</groupId>
-			<artifactId>high-scale-lib</artifactId>
-			<version>1.1.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.safehaus.jug</groupId>
-			<artifactId>jug-asl</artifactId>
-			<version>2.0.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.4.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<version>1.4.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr</artifactId>
-			<version>3.2</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
 			<id>central</id>
 			<name>Maven Central Repo</name>
 			<url>http://repo1.maven.org/maven2</url>
-		</repository>
-		<repository>
-			<id>riptano</id>
-			<name>riptano</name>
-			<url>http://mvn.riptano.com/content/repositories/public</url>
 		</repository>
 		<repository>
 			<id>maven.scale7.org</id>
@@ -300,16 +180,17 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.1</version>
 					<configuration>
-						<compilerVersion>1.6</compilerVersion>
-						<source>1.6</source>
-						<target>1.6</target>
+						<compilerVersion>${maven.compiler.source}</compilerVersion>
+						<source>${maven.compiler.source}</source>
+						<target>${maven.compiler.target}</target>
 					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.5</version>
+					<version>2.22.2</version>
 					<configuration>
 						<argLine>-Xms256m -Xmx512m -ea</argLine>
 						<systemPropertyVariables>
@@ -323,7 +204,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-failsafe-plugin</artifactId>
-					<version>2.5</version>
+					<version>2.22.2</version>
 					<configuration>
 						<argLine>-Xms256m -Xmx512m</argLine>
 						<systemPropertyVariables>
@@ -351,7 +232,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.2</version>
+					<version>3.1.2</version>
 					<executions>
 						<execution>
 							<goals>
@@ -364,6 +245,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
+					<version>3.1.0</version>
 					<executions>
 						<execution>
 							<id>attach-sources</id>
@@ -376,6 +258,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.1.1</version>
 					<executions>
 						<execution>
 							<id>attach-javadocs</id>
@@ -384,10 +267,14 @@
 							</goals>
 						</execution>
 					</executions>
+					<configuration>
+						<source>${maven.compiler.source}</source>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.2</version>
 					<configuration>
 						<updateReleaseInfo>true</updateReleaseInfo>
 					</configuration>
@@ -423,22 +310,22 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.0.1</version>
+				<version>3.0.0</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
+				<version>3.1.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
-				<version>2.2</version>
+				<version>3.0.0</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-changelog-plugin</artifactId>
-				<version>2.2</version>
+				<version>2.3</version>
 			</plugin>
 		</plugins>
 	</reporting>

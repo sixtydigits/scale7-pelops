@@ -288,12 +288,16 @@ public class CommonsBackedPoolIntegrationTest extends AbstractIntegrationTest {
     /**
      * Test initialization with static node list that contains an offline node.
      * https://github.com/s7/scale7-pelops/issues#issue/24
+     * As noted in https://github.com/s7/scale7-pelops/issues/24#issuecomment-709784 this test will only pass if the 'down'
+     * node has an address that is routable (but not connected). If you provide an address that isn't routable it fails because
+     * the connection is dropped immediately.
      */
     @Test
     public void testInitWithDownedNode() throws Exception {
         final int timeout = 2000;
         final int allowedDeviation = 10; // allowed timeout deviation in percentage
-        Cluster cluster = new Cluster(new String[] {RPC_LISTEN_ADDRESS, "192.0.2.0"}, new IConnection.Config(RPC_PORT, true, timeout), false);
+
+        Cluster cluster = new Cluster(new String[] {RPC_LISTEN_ADDRESS, "172.0.2.0"}, new IConnection.Config(RPC_PORT, true, timeout), false);
 
         CommonsBackedPool.Policy config = new CommonsBackedPool.Policy();
         config.setTimeBetweenScheduledMaintenanceTaskRunsMillis(-1); // disable the background thread

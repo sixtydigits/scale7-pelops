@@ -1,0 +1,10 @@
+version: "2"
+services:
+  cassandra:
+    image: cassandra:2.1
+    container_name: cassandra-pelops
+    environment:
+      - CASSANDRA_CLUSTER_NAME=cassandra-pelops
+      - CASSANDRA_MAX_HEAP_SIZE=512m
+    ports:
+      - 19160:9160

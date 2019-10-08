@@ -10,10 +10,6 @@ License
 ======
 Pelops is provided under the [MIT licence](http://www.opensource.org/licenses/mit-license.php). 
 
-Releases
-=====================
-The latest stable release is 1.3-1.1.x, the latest SNAPSHOT is 1.4-1.0.x-SNAPSHOT and can be downloaded (along with all versions) from: https://github.com/s7/mvnrepo/tree/master/org/scale7/scale7-pelops
-
 Using Pelops in a Maven project
 ========================
 To use Pelops with Cassandra 1.1.x or 1.2.x use the following:

@@ -33,7 +33,6 @@ public abstract class AbstractIntegrationTest {
 
 	public static final String KEYSPACE = "PelopsTesting";
 
-	private static EmbeddedCassandraServer cassandraServer;
 
 	public static Cluster cluster = new Cluster(RPC_LISTEN_ADDRESS, RPC_PORT);
 
@@ -68,15 +67,6 @@ public abstract class AbstractIntegrationTest {
 	 *             if an error occurs
 	 */
 	public static void setup(List<CfDef> columnDefinitions) throws Exception {
-		if (cassandraServer == null) {
-			cassandraServer = new EmbeddedCassandraServer();
-			cassandraServer.start();
-
-			// wait until cassandra server starts up. could wait less time, but
-			// 2 seconds to be sure.
-			Thread.sleep(2000);
-		}
-
 		colFamilyDefs = columnDefinitions;
 
 		keyspaceManager = new KeyspaceManager(cluster);

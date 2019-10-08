@@ -7,6 +7,9 @@ import static org.junit.Assert.assertNull;
 import org.apache.cassandra.thrift.AuthenticationRequest;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * Tests the {@link org.scale7.cassandra.pelops.Cluster} class.
  */
@@ -25,6 +28,13 @@ public class ClusterUnitTest {
         Cluster cluster = new Cluster(nodes[0] + ", " + nodes[1] + ", " + nodes[2], 5555, false);
         Cluster.Node[] resultingNodes = cluster.getNodes();
         assertEquals("Incorrect wrong number of contact nodes", 3, resultingNodes.length);
+
+        Arrays.sort(resultingNodes, new Comparator<Cluster.Node>() {
+            @Override
+            public int compare(Cluster.Node o1, Cluster.Node o2) {
+                return o1.getAddress().compareTo(o2.getAddress());
+            }
+        });
         for (int i = 0; i < nodes.length; i++) {
             assertEquals("Node did not match", nodes[i], resultingNodes[i].getAddress());
         }

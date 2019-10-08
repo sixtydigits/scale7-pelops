@@ -172,13 +172,13 @@ public class SelectorIntegrationTest extends AbstractIntegrationTest {
     	
     	assertEquals("Wrong number of columns in key returned", 2, keys.get(key).size());
     	
-    	Column column = keys.get(key).get(0);
-    	
-    	assertEquals("Wrong column 'name' value", "name-b", toUTF8(column.getValue()));
+    	Column columnName = keys.get(key).stream().filter(aColumn -> toUTF8(aColumn.getName()).equals("name")).findFirst().get();
 
-    	column = keys.get(key).get(1);
+    	assertEquals("Wrong column 'name' value", "name-b", toUTF8(columnName.getValue()));
 
-        assertEquals("Wrong column 'value' value", 1L, Bytes.fromByteArray(column.getValue()).toLong());
+        Column columnAge = keys.get(key).stream().filter(aColumn -> toUTF8(aColumn.getName()).equals("age")).findFirst().get();
+
+        assertEquals("Wrong column 'value' value", 1L, Bytes.fromByteArray(columnAge.getValue()).toLong());
     }
 
     @Test
