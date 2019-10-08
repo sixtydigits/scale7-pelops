@@ -100,7 +100,7 @@ public interface IConnection {
          * @param thriftPort the port to connect to
          * @param framedTransportRequired is framed transport required
          * @param timeout the timeout (0 or less to use thrift default)
-         * @param connection authenticator
+         * @param connectionAuthenticator authenticator
          */
         public Config(int thriftPort, boolean framedTransportRequired, int timeout, IConnectionAuthenticator connectionAuthenticator) {
             this(thriftPort, framedTransportRequired, timeout, connectionAuthenticator, false, null, null);
@@ -111,7 +111,7 @@ public interface IConnection {
          * @param thriftPort the port to connect to
          * @param framedTransportRequired is framed transport required
          * @param timeout the timeout (0 or less to use thrift default)
-         * @param connection authenticator
+         * @param connectionAuthenticator authenticator
          * @param sslTransportRequired  is SSL transport required
          * @param trustStorePath path to trust store
          * @param trustStorePassword password to the trust store

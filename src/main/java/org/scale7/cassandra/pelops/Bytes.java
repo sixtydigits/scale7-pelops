@@ -848,9 +848,6 @@ public class Bytes {
 
     /**
      * Converts the backing array to the appropriate object instance handling nulls.
-     * <p/>
-     * <p>Note: we could potentially depend on the {@link org.apache.cassandra.utils.ByteBufferUtil#string(java.nio.ByteBuffer, java.nio.charset.Charset)}.
-     * Is it a public API?
      *
      * @return the deserialized instance or null if the backing array was null
      */

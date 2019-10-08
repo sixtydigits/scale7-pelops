@@ -69,7 +69,6 @@ public class ManagerOperand {
     /**
      * Acquire connections to cluster nodes in a manner that reduces the likelihood of synchronization issues
      * in the event of failure. See http://wiki.apache.org/cassandra/FAQ#no_keyspaces for an explanation.
-     * @return
      * @throws Exception
      */
 	protected void openClient() throws Exception {
