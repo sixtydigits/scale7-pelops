@@ -30,7 +30,7 @@ import org.scale7.cassandra.pelops.Cluster;
 import org.scale7.cassandra.pelops.OperandPolicy;
 import org.scale7.cassandra.pelops.pool.CommonsBackedPool;
 import org.scale7.cassandra.pelops.pool.IThriftPool;
-import org.scale7.portability.SystemProxy;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
@@ -76,7 +76,7 @@ import org.springframework.util.Assert;
  */
 public class CommonsBackedPoolFactoryBean
         implements FactoryBean<IThriftPool>, InitializingBean, DisposableBean {
-    private static final Logger logger = SystemProxy.getLoggerFromFactory(CommonsBackedPoolFactoryBean.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommonsBackedPoolFactoryBean.class);
 
     private Cluster cluster;
     private String keyspace;

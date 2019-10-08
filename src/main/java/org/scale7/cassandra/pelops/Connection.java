@@ -37,11 +37,11 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 import org.scale7.cassandra.pelops.exceptions.IExceptionTranslator;
-import org.scale7.portability.SystemProxy;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 public class Connection implements IConnection {
-    private static final Logger logger = SystemProxy.getLoggerFromFactory(Connection.class);
+    private static final Logger logger = LoggerFactory.getLogger(Connection.class);
     
     public static String[] DEFAULT_CIPHER_SUITES = {"TLS_RSA_WITH_AES_128_CBC_SHA"/*, "TLS_RSA_WITH_AES_256_CBC_SHA"*/};
     

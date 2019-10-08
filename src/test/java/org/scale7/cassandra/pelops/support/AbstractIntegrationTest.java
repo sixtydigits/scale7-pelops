@@ -16,7 +16,7 @@ import org.scale7.cassandra.pelops.OperandPolicy;
 import org.scale7.cassandra.pelops.Selector;
 import org.scale7.cassandra.pelops.pool.DebuggingPool;
 import org.scale7.cassandra.pelops.pool.IThriftPool;
-import org.scale7.portability.SystemProxy;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 /**
@@ -24,7 +24,7 @@ import org.slf4j.Logger;
  */
 public abstract class AbstractIntegrationTest {
 
-	protected final Logger logger = SystemProxy.getLoggerFromFactory(this
+	protected final Logger logger = LoggerFactory.getLogger(this
 			.getClass());
 
 	public static final String RPC_LISTEN_ADDRESS = getenv("CASSANDRA_HOST", "localhost");

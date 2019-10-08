@@ -28,12 +28,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.scale7.cassandra.pelops.pool.CommonsBackedPool;
 import org.scale7.cassandra.pelops.pool.IThriftPool;
-import org.scale7.portability.SystemProxy;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 public class Pelops {
 
-	private static final Logger logger = SystemProxy.getLoggerFromFactory(Pelops.class);
+	private static final Logger logger = LoggerFactory.getLogger(Pelops.class);
 
 	private static ConcurrentHashMap<String, IThriftPool> poolMap = new ConcurrentHashMap<String, IThriftPool>();
 

@@ -29,7 +29,7 @@ import java.util.List;
 import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.thrift.KsDef;
 import org.apache.cassandra.thrift.TokenRange;
-import org.scale7.portability.SystemProxy;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 /**
@@ -38,7 +38,7 @@ import org.slf4j.Logger;
  * See http://wiki.apache.org/cassandra/LiveSchemaUpdates for more details.
  */
 public class KeyspaceManager extends ManagerOperand {
-    private static final Logger logger = SystemProxy.getLoggerFromFactory(KeyspaceManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(KeyspaceManager.class);
 
     public static final String KSDEF_STRATEGY_SIMPLE = "org.apache.cassandra.locator.SimpleStrategy";
     public static final String KSDEF_STRATEGY_LOCAL = "org.apache.cassandra.locator.LocalStrategy";

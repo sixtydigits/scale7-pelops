@@ -29,14 +29,14 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.scale7.cassandra.pelops.JmxMBeanManager;
-import org.scale7.portability.SystemProxy;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 /**
 * A pooled node class used by the {@link org.scale7.cassandra.pelops.pool.CommonsBackedPool}.
 */
 public class PooledNode implements PooledNodeMBean {
-    private static final Logger logger = SystemProxy.getLoggerFromFactory(CommonsBackedPool.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommonsBackedPool.class);
     private CommonsBackedPool pool;
     private String address;
 

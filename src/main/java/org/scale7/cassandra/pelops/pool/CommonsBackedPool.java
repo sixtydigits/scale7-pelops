@@ -51,11 +51,11 @@ import org.scale7.cassandra.pelops.JmxMBeanManager;
 import org.scale7.cassandra.pelops.OperandPolicy;
 import org.scale7.cassandra.pelops.exceptions.NoConnectionsAvailableException;
 import org.scale7.cassandra.pelops.exceptions.PelopsException;
-import org.scale7.portability.SystemProxy;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 public class CommonsBackedPool extends ThriftPoolBase implements CommonsBackedPoolMBean {
-    private static final Logger logger = SystemProxy.getLoggerFromFactory(CommonsBackedPool.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommonsBackedPool.class);
 
     private static final int DEFAULT_WAIT_PERIOD = 100;
 

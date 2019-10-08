@@ -28,11 +28,11 @@ import org.apache.cassandra.thrift.Cassandra;
 import org.apache.cassandra.thrift.TimedOutException;
 import org.apache.cassandra.thrift.UnavailableException;
 import org.apache.thrift.transport.TTransportException;
-import org.scale7.portability.SystemProxy;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 public class ManagerOperand {
-	private static final Logger logger = SystemProxy.getLoggerFromFactory(ManagerOperand.class);
+	private static final Logger logger = LoggerFactory.getLogger(ManagerOperand.class);
 
 	static final int SAFE_NODE_CHANGE_DELAY = 60000;
 	static final int RETRY_NODE_DELAY = 1000;

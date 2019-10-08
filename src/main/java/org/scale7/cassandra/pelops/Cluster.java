@@ -34,7 +34,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.cassandra.thrift.KsDef;
 import org.apache.cassandra.thrift.TokenRange;
-import org.scale7.portability.SystemProxy;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 /**
@@ -50,7 +50,7 @@ public class Cluster {
      */
     public static final int DEFAULT_TIMEOUT = 4000;
 
-    private final Logger logger = SystemProxy.getLoggerFromFactory(Cluster.class);
+    private final Logger logger = LoggerFactory.getLogger(Cluster.class);
 
 	private String[] nodes;
     private final IConnection.Config connectionConfig;

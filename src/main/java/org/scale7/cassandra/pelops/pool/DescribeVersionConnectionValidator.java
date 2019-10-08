@@ -24,7 +24,7 @@
 
 package org.scale7.cassandra.pelops.pool;
 
-import org.scale7.portability.SystemProxy;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 /**
@@ -32,7 +32,7 @@ import org.slf4j.Logger;
  * validate that the connection still works.
  */
 public class DescribeVersionConnectionValidator implements CommonsBackedPool.IConnectionValidator {
-    private static final Logger logger = SystemProxy.getLoggerFromFactory(DescribeVersionConnectionValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(DescribeVersionConnectionValidator.class);
     /**
      * Returns true if the call to {@link org.apache.cassandra.thrift.Cassandra.Client#describe_version} succeeds.
      * @param connection the connection
