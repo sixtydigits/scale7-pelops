@@ -4,6 +4,8 @@ stages:
 variables:
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  CASSANDRA_HOST: cassandra
+  CASSANDRA_THRIFT_PORT: 9160
   CASSANDRA_CLUSTER_NAME: cassandra-pelops
   CASSANDRA_MAX_HEAP_SIZE: 512m
 

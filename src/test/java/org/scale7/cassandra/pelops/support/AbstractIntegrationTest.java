@@ -27,9 +27,9 @@ public abstract class AbstractIntegrationTest {
 	protected final Logger logger = SystemProxy.getLoggerFromFactory(this
 			.getClass());
 
-	public static final String RPC_LISTEN_ADDRESS = "localhost";
+	public static final String RPC_LISTEN_ADDRESS = getenv("CASSANDRA_HOST", "localhost");
 
-	public static final int RPC_PORT = 19160;
+	public static final int RPC_PORT = Integer.parseInt(getenv("CASSANDRA_THRIFT_PORT", "19160"));
 
 	public static final String KEYSPACE = "PelopsTesting";
 
@@ -58,6 +58,16 @@ public abstract class AbstractIntegrationTest {
 
 	protected IThriftPool getPool() {
 		return pool;
+	}
+
+	static String getenv(String name, String defaultValue) {
+		String actual = System.getenv(name);
+
+		if (actual != null) {
+			return actual;
+		} else {
+			return defaultValue;
+		}
 	}
 
 	/**
