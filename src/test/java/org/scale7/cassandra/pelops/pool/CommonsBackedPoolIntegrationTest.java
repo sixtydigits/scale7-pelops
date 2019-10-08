@@ -117,7 +117,7 @@ public class CommonsBackedPoolIntegrationTest extends AbstractIntegrationTest {
                 fail("Failed to run all submitted tasks within a minute");
             }
 
-            PooledNode node = pool.getPooledNode("localhost");
+            PooledNode node = pool.getPooledNode(RPC_LISTEN_ADDRESS);
 
             assertEquals("Task count did not match connections borrowed", taskCount, pool.getStatistics().getConnectionsBorrowedTotal());
             assertEquals("Task count did not match connections borrowed on node", taskCount, node.getConnectionsBorrowedTotal());
