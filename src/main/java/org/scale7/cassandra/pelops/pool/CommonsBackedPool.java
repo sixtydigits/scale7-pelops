@@ -37,6 +37,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.cassandra.thrift.InvalidRequestException;
 import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
@@ -294,80 +295,86 @@ public class CommonsBackedPool extends ThriftPoolBase implements CommonsBackedPo
         PooledNode node = null;
         IPooledConnection connection = null;
         long timeout = -1;
+        long startTime = System.currentTimeMillis();
 
-        while (connection == null) {
-            if (timeout == -1) {
-                // first run through calc the timeout for the next loop
-                // (this makes debugging easier)
-                int maxWait = getPolicy().getMaxWaitForConnection();
-                timeout = maxWait > 0 ?
-                        System.currentTimeMillis() + maxWait :
-                        Long.MAX_VALUE;
-            } else if (timeout < System.currentTimeMillis()) {
-                logger.debug("Max wait time for connection exceeded");
-                break;
-            }
-
-            node = nodeSelectionStrategy.select(this, nodes.keySet(), avoidNodes);
-            // if the strategy was unable to choose a node (all suspended?) then sleep for a bit and loop
-            if (node == null) {
-                logger.debug("The node selection strategy was unable to choose a node, sleeping before trying again...");
-                try {
-                    Thread.sleep(DEFAULT_WAIT_PERIOD);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
+        try {
+            while (connection == null) {
+                if (timeout == -1) {
+                    // first run through calc the timeout for the next loop
+                    // (this makes debugging easier)
+                    int maxWait = getPolicy().getMaxWaitForConnection();
+                    timeout = maxWait > 0 ?
+                            System.currentTimeMillis() + maxWait :
+                            Long.MAX_VALUE;
+                } else if (timeout < System.currentTimeMillis()) {
+                    logger.debug("Max wait time for connection exceeded");
+                    break;
                 }
-                continue;
+
+                node = nodeSelectionStrategy.select(this, nodes.keySet(), avoidNodes);
+                // if the strategy was unable to choose a node (all suspended?) then sleep for a bit and loop
+                if (node == null) {
+                    logger.debug("The node selection strategy was unable to choose a node, sleeping before trying again...");
+                    try {
+                        Thread.sleep(DEFAULT_WAIT_PERIOD);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                    continue;
+                }
+
+                try {
+                    logger.debug("Attempting to borrow free connection for node '{}'", node.getAddress());
+                    // note that if no connections are currently available for this node then the pool will sleep for
+                    // DEFAULT_WAIT_PERIOD milliseconds
+                    connection = pool.borrowObject(node.getAddress());
+                } catch (IllegalStateException e) {
+                    throw new PelopsException("The pool has been shutdown", e);
+                } catch (Exception e) {
+                    if (e instanceof NoSuchElementException) {
+                        logger.debug("No free connections available for node '{}'.  Trying another node...", node.getAddress());
+                    } else if (e instanceof TTransportException) {
+                        logger.warn(String.format("A TTransportException was thrown while attempting to create a connection to '%s'.  " +
+                                "This node will be suspended for %sms.  Trying another node...",
+                                node.getAddress(), this.policy.getNodeDownSuspensionMillis()));
+                        node.suspendForMillis(this.policy.getNodeDownSuspensionMillis());
+                    } else
+                        logger.warn(String.format("An exception was thrown while attempting to create a connection to '%s'.  " +
+                                "Trying another node...", node.getAddress()), e);
+
+                    // try and avoid this node on the next trip through the loop
+                    if (avoidNodes == null)
+                        avoidNodes = new HashSet<String>(10);
+
+                    avoidNodes.add(node.getAddress());
+                }
             }
 
-            try {
-                logger.debug("Attempting to borrow free connection for node '{}'", node.getAddress());
-                // note that if no connections are currently available for this node then the pool will sleep for
-                // DEFAULT_WAIT_PERIOD milliseconds
-                connection = pool.borrowObject(node.getAddress());
-            } catch (IllegalStateException e) {
-                throw new PelopsException("The pool has been shutdown", e);
-            } catch (Exception e) {
-                if (e instanceof NoSuchElementException) {
-                    logger.debug("No free connections available for node '{}'.  Trying another node...", node.getAddress());
-                } else if (e instanceof TTransportException) {
-                    logger.warn(String.format("A TTransportException was thrown while attempting to create a connection to '%s'.  " +
-                            "This node will be suspended for %sms.  Trying another node...",
-                            node.getAddress(), this.policy.getNodeDownSuspensionMillis()));
-                    node.suspendForMillis(this.policy.getNodeDownSuspensionMillis());
-                } else
-                    logger.warn(String.format("An exception was thrown while attempting to create a connection to '%s'.  " +
-                            "Trying another node...", node.getAddress()), e);
-
-                // try and avoid this node on the next trip through the loop
-                if (avoidNodes == null)
-                    avoidNodes = new HashSet<String>(10);
-
-                avoidNodes.add(node.getAddress());
+            if (node == null) {
+                logger.error(
+                        "Failed to get a connection within the configured wait time because there are no available nodes. " +
+                                "This possibly indicates that either the suspension strategy is too aggressive or that your " +
+                                "cluster is in a bad way."
+                );
+                throw new NoConnectionsAvailableException("Failed to get a connection within the configured max wait time.");
             }
-        }
 
-        if (node == null) {
-            logger.error(
-                    "Failed to get a connection within the configured wait time because there are no available nodes. " +
-                            "This possibly indicates that either the suspension strategy is too aggressive or that your " +
-                            "cluster is in a bad way."
-            );
-            throw new NoConnectionsAvailableException("Failed to get a connection within the configured max wait time.");
-        }
+            if (connection == null) {
+                logger.error(
+                        "Failed to get a connection within the maximum allowed wait time.  " +
+                                "Try increasing the either the number of allowed connections or the max wait time."
+                );
+                throw new NoConnectionsAvailableException("Failed to get a connection within the configured max wait time.");
+            }
 
-        if (connection == null) {
-            logger.error(
-                    "Failed to get a connection within the maximum allowed wait time.  " +
-                            "Try increasing the either the number of allowed connections or the max wait time."
-            );
-            throw new NoConnectionsAvailableException("Failed to get a connection within the configured max wait time.");
+            logger.debug("Borrowing connection '{}'", connection);
+            statistics.connectionsActive.incrementAndGet();
+            reportConnectionBorrowed(connection.getNode().getAddress());
+            return connection;
+        } finally {
+            long timeSpent = System.currentTimeMillis() - startTime;
+            statistics.connectionsWait.addAndGet(timeSpent);
         }
-
-        logger.debug("Borrowing connection '{}'", connection);
-        statistics.connectionsActive.incrementAndGet();
-        reportConnectionBorrowed(connection.getNode().getAddress());
-        return connection;
     }
 
     /**
@@ -939,6 +946,7 @@ public class CommonsBackedPool extends ThriftPoolBase implements CommonsBackedPo
         private AtomicInteger connectionsActive;
         private AtomicInteger connectionsBorrowedTotal;
         private AtomicInteger connectionsReleasedTotal;
+        private AtomicLong connectionsWait;
 
         public RunningStatistics() {
             nodesActive = new AtomicInteger();
@@ -949,6 +957,7 @@ public class CommonsBackedPool extends ThriftPoolBase implements CommonsBackedPo
             connectionsActive = new AtomicInteger();
             connectionsBorrowedTotal = new AtomicInteger();
             connectionsReleasedTotal = new AtomicInteger();
+            connectionsWait = new AtomicLong();
         }
 
         public int getConnectionsCreated() {
@@ -981,6 +990,10 @@ public class CommonsBackedPool extends ThriftPoolBase implements CommonsBackedPo
 
         public int getConnectionsReleasedTotal() {
             return connectionsReleasedTotal.get();
+        }
+
+        public long getConnectionsWait() {
+            return connectionsWait.get();
         }
     }
 
