@@ -32,8 +32,8 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:git:http://github.com/sixtydigits/scale7-pelops.git</connection>
-		<developerConnection>scm:git:git@github.com:sixtydigits/scale7-pelops.git</developerConnection>
+		<connection>scm:git:git@code.sixtydigits.com:danwas/scale7-pelops.git</connection>
+		<developerConnection>scm:git:git@code.sixtydigits.com:danwas/scale7-pelops.git</developerConnection>
 		<url>http://github.com/s7/scale7-pelops</url>
 	</scm>
 	<issueManagement>
