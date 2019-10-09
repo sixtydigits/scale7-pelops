@@ -15,7 +15,7 @@
 		<developer>
 			<name>Dominic Williams</name>
 			<roles>
-				<role>Project Lead</role>
+				<role>Original Author</role>
 			</roles>
 		</developer>
 		<developer>
@@ -67,7 +67,7 @@
 			<groupId>com.eaio.uuid</groupId>
 			<artifactId>uuid</artifactId>
 			<!-- NOTE: we can't use the 'official' 3.5 release because it has deps on cobertura -->
-			<version>3.5-SD</version>
+			<version>3.7-SD</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-pool</groupId>
