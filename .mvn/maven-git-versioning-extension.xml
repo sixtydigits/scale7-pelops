@@ -2,7 +2,11 @@
     <updatePom>true</updatePom>
     <branch>
         <pattern>master</pattern>
-        <versionFormat>${commit.short}</versionFormat>
+        <versionFormat>${version}</versionFormat>
+    </branch>
+    <branch>
+        <pattern><![CDATA[feature/(?<feature>.+)]]></pattern>
+        <versionFormat>${feature}-SNAPSHOT</versionFormat>
     </branch>
     <tag>
         <pattern><![CDATA[v(?<tagVersion>[0-9].*)]]></pattern>

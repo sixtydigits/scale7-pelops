@@ -41,6 +41,3 @@ deploy:
   stage: deploy
   script:
     - mvn $MAVEN_CLI_OPTS $MAVEN_OPTS -Dmaven.test.skip=true deploy
-  artifacts:
-    paths:
-      - target/*.jar
