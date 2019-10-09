@@ -1,18 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.scale7</groupId>
-	<artifactId>scale7-pelops</artifactId>
+	<groupId>com.sixtydigits</groupId>
+	<artifactId>pelops</artifactId>
 	<packaging>jar</packaging>
-	<version>1.5-2.1.x-SNAPSHOT</version>
+	<version>2.1.0-SNAPSHOT</version>
 	<name>Pelops - A library for accessing the Cassandra database</name>
 	<url>http://github.com/sixtydigits/scale7-pelops</url>
 	<properties>
-		<!-- The ${scale7.deploy.dir} should point to the directory that contains 
-			the clone of http://github.com/s7/mvnrepo. By default it assumes that it's 
-			a sibling of the current project directory. To change the default value alter 
-			your ~/.m2/settings.xml file. NOTE: In order to perform releases this must 
-			be an absolute path (specified in your settings.xml). -->
-		<scale7.deploy.dir>file://${basedir}/../mvnrepo</scale7.deploy.dir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>8</maven.compiler.target>
@@ -34,10 +28,10 @@
 	<scm>
 		<connection>scm:git:git@code.sixtydigits.com:danwas/scale7-pelops.git</connection>
 		<developerConnection>scm:git:git@code.sixtydigits.com:danwas/scale7-pelops.git</developerConnection>
-		<url>http://github.com/s7/scale7-pelops</url>
+		<url>http://github.com/sixtydigits/scale7-pelops</url>
 	</scm>
 	<issueManagement>
-		<url>http://github.com/s7/scale7-pelops/issues</url>
+		<url>http://github.com/sixtydigits/scale7-pelops/issues</url>
 	</issueManagement>
 	<mailingLists>
 		<mailingList>
@@ -326,12 +320,8 @@
 	</reporting>
 	<distributionManagement>
 		<repository>
-			<id>maven.scale7.org.local</id>
-			<name>Deployment Staging Area</name>
-			<!-- The ${scale7.deploy.dir} is defined in your ~/.m2/settings.xml file 
-				and it should point to the directory that contains the clone of http://github.com/s7/mvnrepo. 
-				e.g. file:///Users/dan/Development/Projects/scale7/mvnrepo -->
-			<url>${scale7.deploy.dir}</url>
+			<id>nexus.sixtydigits.com-custom-public</id>
+			<url>https://nexus.sixtydigits.com/repository/maven-custom-releases-public/</url>
 			<layout>default</layout>
 		</repository>
 	</distributionManagement>
