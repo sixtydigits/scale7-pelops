@@ -1,11 +1,8 @@
 <gitVersioning>
+    <updatePom>true</updatePom>
     <branch>
         <pattern>master</pattern>
-        <versionFormat>${version}</versionFormat>
-    </branch>
-    <branch>
-        <pattern><![CDATA[feature/(?<feature>.+)]]></pattern>
-        <versionFormat>${feature}-SNAPSHOT</versionFormat>
+        <versionFormat>${commit.short}</versionFormat>
     </branch>
     <tag>
         <pattern><![CDATA[v(?<tagVersion>[0-9].*)]]></pattern>
