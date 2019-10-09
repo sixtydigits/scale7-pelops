@@ -258,6 +258,7 @@
 					</executions>
 					<configuration>
 						<source>${maven.compiler.source}</source>
+						<failOnError>false</failOnError>
 					</configuration>
 				</plugin>
 				<plugin>
